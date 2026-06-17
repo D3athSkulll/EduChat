@@ -1,5 +1,6 @@
 import { Assignment, IAssignment } from "../models/assignment.model";
-
+import { AppError } from "../utils/AppError";
+import { isValidObjectId } from "../utils/isValidObjectId";
 interface CreateAssignmentPayload {
     title: string;
     dueDate: string;
@@ -40,10 +41,14 @@ export const getAssignments = async () => {
 };
 
 export const getAssignmentById = async(id: string) => {
+    if(!isValidObjectId(id)){
+        throw new AppError("Invalid Assignment Id", 400);
+    }
+
     const assignment = await Assignment.findById(id).lean();
 
     if(!assignment){
-        throw new Error("Assignment not found");
+        throw new AppError("Assignment not found", 404);
     }
 
     return assignment;
