@@ -21,18 +21,6 @@ export const createAssignment = async(
         totalMarks,
     } = payload;
 
-    if(!title.trim()){
-        throw new Error("Title is required");
-    }
-
-    if(totalQuestions <= 0){
-        throw new Error("Total Questions should be greater than 0");
-    }
-
-    if(totalMarks <= 0){
-        throw new Error("Total Marks should be greater than 0");
-    }
-
     const assignment = await Assignment.create({
         title,
         dueDate,
