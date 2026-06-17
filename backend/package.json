@@ -3,7 +3,8 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "mongoose": "^9.7.0"
+    "mongoose": "^9.7.0",
+    "zod": "^4.4.3"
   },
   "scripts": {
     "dev": "ts-node-dev --respawn server.ts",
