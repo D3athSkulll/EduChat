@@ -53,3 +53,23 @@ export const getAssignmentById = async(id: string) => {
 
     return assignment;
 };
+
+export const updateAssignment = async(id: string, updates: Record<string,unknown>) => {
+    if(!isValidObjectId(id)){
+        throw new AppError("Invalid Assignment Id", 400);
+    }
+    const assignment = await Assignment.findByIdAndUpdate(
+        id,
+        updates,
+        {
+            new:true,
+            runValidators:true,
+        }
+    ).lean();
+
+    if(!assignment){
+        throw new AppError("Assignment not found",404);
+    }
+
+    return assignment;
+}

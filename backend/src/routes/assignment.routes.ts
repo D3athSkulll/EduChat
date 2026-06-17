@@ -1,8 +1,8 @@
 import {Router} from "express";
 
-import { createAssignmentController, getAssignmentByIdController, getAssignmentsController } from "../controllers/assignment.controller";
+import { createAssignmentController, getAssignmentByIdController, getAssignmentsController, updateAssignmentController } from "../controllers/assignment.controller";
 import { validateRequest } from "../middlewares/validate-request";
-import { createAssignmentSchema } from "../validators/assignment.validator";
+import { createAssignmentSchema, updateAssignmentSchema } from "../validators/assignment.validator";
 
 const router = Router();
 
@@ -21,5 +21,11 @@ router.get(
     "/:id",
     getAssignmentByIdController
 )
+
+router.patch(
+  "/:id",
+  validateRequest(updateAssignmentSchema),
+  updateAssignmentController
+);
 
 export default router;

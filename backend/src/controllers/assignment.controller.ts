@@ -6,6 +6,7 @@ import {
   createAssignment,
   getAssignments,
   getAssignmentById,
+  updateAssignment,
 } from "../services/assignment.service";
 import { apiResponse } from "../utils/apiResponse";
 
@@ -44,3 +45,18 @@ export const getAssignmentByIdController = asyncHandler(
     );
   },
 );
+
+
+export const updateAssignmentController = asyncHandler(async(req:Request, res:Response)=>{
+  const id = req.params.id;
+  if (Array.isArray(id)) {
+    return res.status(400).json({
+        success: false,
+        message: "Invalid assignment id",
+      });
+    }
+  const assignment = await updateAssignment(id,req.body);
+  res.status(200).json(
+    apiResponse(assignment, "Assignment updated successfully")
+  )
+})
