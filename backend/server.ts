@@ -2,7 +2,8 @@ import dotenv from "dotenv";
 
 import app from "./app";
 import {connectDB} from "./src/config/db";
-
+import {connectRabbitMQ} from "./src/config/rabbitmq";
+import {startTestConsumer} from "./src/workers/test.consumer";
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
@@ -10,6 +11,9 @@ const PORT = process.env.PORT || 5000;
 const bootstrap = async () => {
     try{
         await connectDB();
+        await connectRabbitMQ();
+
+        await startTestConsumer();
 
         app.listen(PORT, ()=>{
             console.log(`Server Running on port ${PORT}`);
