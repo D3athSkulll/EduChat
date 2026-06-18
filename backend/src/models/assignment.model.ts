@@ -1,4 +1,5 @@
 import {Document, Schema, model} from "mongoose";
+import { GENERATION_STATUS, GenerationStatus } from "../constants/assessment.constants";
 
 export interface IAssignment extends Document {
     title: string;
@@ -8,11 +9,7 @@ export interface IAssignment extends Document {
     totalQuestions: number;
     totalMarks: number;
 
-    status:
-        | "PENDING"
-        | "PROCESSING"
-        | "COMPLETED"
-        | "FAILED";
+    status: GenerationStatus;
 
     createdAt: Date;
     updatedAt: Date;
@@ -56,13 +53,8 @@ const assignmentSchema = new Schema(
 
         status: {
             type: String,
-            enum: [
-                "PENDING",
-                "PROCESSING",
-                "COMPLETED",
-                "FAILED",
-            ],
-            default: "PENDING",
+            enum: Object.values(GENERATION_STATUS),
+            default: GENERATION_STATUS.PENDING,
         },
     },
     {
