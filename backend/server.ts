@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import app from "./app";
 import {connectDB} from "./src/config/db";
 import {connectRabbitMQ} from "./src/config/rabbitmq";
-import {startTestConsumer} from "./src/workers/test.consumer";
 import {startGenerationConsumer} from "./src/workers/generation.consumer";
 dotenv.config();
 
@@ -14,7 +13,6 @@ const bootstrap = async () => {
         await connectDB();
         await connectRabbitMQ();
 
-        await startTestConsumer();
         await startGenerationConsumer();
 
         app.listen(PORT, ()=>{
