@@ -1,28 +1,25 @@
 import { Assignment } from "../models/assignment.model";
 
-export const generateMockAssessment = async(assignmentId: string)=>{
+import { buildAssessmentPrompt } from "./prompt-builder.service";
+
+import { generateAssessment } from "./ai.service";
+
+import { assessmentResponseSchema } from "../validators/assessment-response.validator";
+import { extractJson } from "../utils/extractJson";
+
+export const generateAssessmentFromPrompt = async(assignmentId: string)=>{
     const assignment = await Assignment.findById(assignmentId);
 
     if(!assignment){
         throw new Error("Assignment not found");
     }
 
-    return [
-        {
-            title: "Section A",
-            instruction: "Attempt all questions",
-            questions: [
-                {
-                    text: "Explain process scheduling",
-                    difficulty:"Easy",
-                    marks: 5,
-                },
-                {
-                    text:"What is deadlock?",
-                    difficulty: "Medium",
-                    marks:10,
-                },
-            ],
-        },
-    ];
+    const prompt = buildAssessmentPrompt(assignment);
+    const response = await generateAssessment(prompt);
+    const cleanedResponse = extractJson(response);
+    const parsed = JSON.parse(cleanedResponse);
+    const validated = assessmentResponseSchema.parse(parsed);
+
+
+    return validated.sections;
 };

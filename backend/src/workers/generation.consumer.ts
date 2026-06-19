@@ -3,7 +3,7 @@ import { getChannel } from "../config/rabbitmq";
 import { QUEUES } from "../constants/queue.constants";
 import { AssessmentResult } from "../models/assessment-result.model";
 import { GENERATION_STATUS } from "../constants/assessment.constants";
-import { generateMockAssessment } from "../services/assessment-generation.service";
+import { generateAssessmentFromPrompt } from "../services/assessment-generation.service";
 
 export const startGenerationConsumer = async()=>{
     const channel = getChannel();
@@ -29,7 +29,7 @@ export const startGenerationConsumer = async()=>{
                     }
                 );
 
-                const sections = await generateMockAssessment(assignmentId);
+                const sections = await generateAssessmentFromPrompt(assignmentId);
 
                 await AssessmentResult.findByIdAndUpdate(
                     assessmentResultId,
