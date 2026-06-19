@@ -4,6 +4,7 @@ import { QUEUES } from "../constants/queue.constants";
 import { AssessmentResult } from "../models/assessment-result.model";
 import { GENERATION_STATUS } from "../constants/assessment.constants";
 import { generateAssessmentFromPrompt } from "../services/assessment-generation.service";
+import { emitGenerationCompleted, emitGenerationFailed } from "../services/websocket.service";
 
 export const startGenerationConsumer = async()=>{
     const channel = getChannel();
@@ -38,18 +39,21 @@ export const startGenerationConsumer = async()=>{
                         sections,
                     }
                 );
+                emitGenerationCompleted(assessmentResultId);
                 console.log("[Generation Job]",payload);
                 channel.ack(message);
             } catch (error) {
                 console.error("[RabbitMQ consumer error]", error);
                 if(payload?.assessmentResultId){
+                    let errorMessage = error instanceof Error ? error.message : "Unknown Error";
                     await AssessmentResult.findByIdAndUpdate(
                         payload.assessmentResultId,
                         {
                             status: GENERATION_STATUS.FAILED,
-                            errorMessage: error instanceof Error ? error.message : "Unknown Error",
+                            errorMessage: errorMessage,
                         }
                     );
+                    emitGenerationFailed(payload.assessmentResultId, errorMessage);
                 }
                 channel.ack(message);
             }

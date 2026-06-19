@@ -1,4 +1,7 @@
 import dotenv from "dotenv";
+import http from "http";
+
+import {initializeSocket} from "./src/sockets/socket";
 
 import app from "./app";
 import {connectDB} from "./src/config/db";
@@ -15,8 +18,11 @@ const bootstrap = async () => {
 
         await startGenerationConsumer();
 
-        app.listen(PORT, ()=>{
-            console.log(`Server Running on port ${PORT}`);
+        const httpServer = http.createServer(app);
+
+        initializeSocket(httpServer);
+        httpServer.listen(PORT, ()=>{
+            console.log(`[Server] Running on port ${PORT}`);
         });
     } catch(error){
         console.error("Failed to start application");
