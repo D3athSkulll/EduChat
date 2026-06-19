@@ -54,7 +54,7 @@ export const updateAssignmentController = asyncHandler(async(req:Request, res:Re
         success: false,
         message: "Invalid assignment id",
       });
-    }
+  }
   const assignment = await updateAssignment(id,req.body);
   res.status(200).json(
     apiResponse(assignment, "Assignment updated successfully")
